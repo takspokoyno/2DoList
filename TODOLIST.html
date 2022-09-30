@@ -1,0 +1,281 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:ital,wght@0,100;0,200;1,100&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+    
+    <script>
+/////////////////////////////////////////////////////////////////
+
+
+
+class ToDoItem{
+    constructor(){
+        this._id =null;
+        this._item = null;
+    }
+
+    getId(){
+return this._id;
+
+    }
+
+    setId(id){
+this._id = id;
+
+    }
+
+    getItem(){
+return this._item;
+
+    }
+
+    setItem(item){
+
+        this._item = item;
+    }
+};
+////////////////////////////////////////////////////////
+class ToDoList{
+constructor(){
+
+    this._arrr =[];
+}
+
+
+getList(){
+
+    return this._arrr;
+}
+
+clearList(){
+     this._arrr =[];
+}
+
+
+
+addItemToList(itemObj){
+
+    this._arrr.push(itemObj);    
+}
+
+removeItemFromList(id){
+    const arrr = this._arrr;
+    for(let i =0; i< arrr.length; i++)
+    {
+if(arrr[i]._id == id)
+{  
+    arrr.splice(i,1);
+    break;
+};
+
+    }
+}
+
+};
+
+///////////////////////////////////////////
+
+const toDoList = new ToDoList();
+
+//запуск
+document.addEventListener("readystatechange" , (event) => {
+    if (event.target.readyState === "complete"){
+        initApp();
+    }
+});
+
+
+const initApp = () => {
+const itemEntryForm = document.getElementById("itemEntryForm");
+itemEntryForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    processSubmission();
+});
+
+const clearItems = document.getElementById("clearItems");
+clearItems.addEventListener("click", (event) =>{
+    const list = toDoList.getList();
+    if(list.length){
+        const confirmed = confirm("Are you sure U want to clear all?");
+        if(confirmed) {
+            toDoList.clearList();
+            updatePersistentData(toDoList.getList());
+            refreshThePage();
+        }
+    }
+})
+
+//загрузка об`єктів зі списку
+//оновлення сторінки
+
+loadListObject();
+
+refreshThePage();
+
+};
+
+
+const loadListObject =() =>{
+    const storedList= localStorage.getItem("myToDoList");
+    if(typeof storedList !== "string") return;
+    const parsedList = JSON.parse(storedList);
+    parsedList.forEach((itemObj) => {
+        const newToDoItem = createNewItem(itemObj._id, itemObj._item);
+        toDoList.addItemToList(newToDoItem);
+    });
+};
+
+const refreshThePage = () =>{
+
+    clearListDisplay();
+    renderList();
+    clearItemEntryField();
+    setFocusOnItemEntry();
+};
+
+const clearListDisplay = () => {
+
+    const parentElement = document.getElementById("listItems");
+    deleteContents(parentElement);
+
+};
+
+const deleteContents = (parentElement) =>{
+
+    let child = parentElement.lastElementChild;
+    while (child){
+        parentElement.removeChild(child);
+        child = parentElement.lastElementChild;
+    }
+};
+
+const renderList = () => {
+
+    const list = toDoList.getList();
+    list.forEach((item) => {
+        buildListener(item);
+        
+    });
+};
+
+const buildListener = (item) => {
+
+    const div = document.createElement("div");
+    div.className = "item";
+    const check = document.createElement("input");
+    check.type = "checkbox";
+    check.id = item.getId();
+    check.tabIndex = 0;
+    addClickListenerToCheckbox(check);
+    const label = document.createElement("label");
+    label.htmlFor = item.getId();
+    label.textContent = item.getItem();
+    div.appendChild(check);
+    div.appendChild(label);
+    const container = document.getElementById("listItems");
+    container.appendChild(div);
+
+};
+
+const addClickListenerToCheckbox = (checkbox) => {
+
+    checkbox.addEventListener("click", (event) => {
+          toDoList.removeItemFromList(checkbox.id);
+          updatePersistentData(toDoList.getList());
+        setTimeout(() => {
+            refreshThePage();
+        }, 1000);
+    });
+};
+
+
+const updatePersistentData =(listArray) =>{
+    localStorage.setItem("myToDoList", JSON.stringify(listArray));
+
+};
+
+
+const clearItemEntryField = () => {
+    document.getElementById("newItem").value = "";
+};
+
+const setFocusOnItemEntry = () => {
+    document.getElementById("newItem").focus();
+};
+
+const processSubmission = () =>{
+    const newEntryText = getNewEntry();
+    if(!newEntryText.length) return ;
+    const nextItemId = calcNextItemId();
+    const toDoItem = createNewItem(nextItemId, newEntryText);
+    toDoList.addItemToList(toDoItem);
+    updatePersistentData(toDoList.getList());
+
+    refreshThePage();
+};
+const getNewEntry = () =>{
+        return document.getElementById("newItem").value.trim();
+    };
+
+const calcNextItemId = () => {
+    let nextItemId = 1;
+    const list = toDoList.getList();
+    if(list.length> 0)
+    {
+        nextItemId = list[list.length - 1].getId() + 1;
+    }
+    return nextItemId;
+};
+
+const createNewItem =(itemId, itemText) => {
+    const toDo = new ToDoItem();
+    toDo.setId(itemId);
+    toDo.setItem(itemText);
+    return toDo;
+};
+
+
+/////////////////////////////////////////////////
+    </script>
+
+    
+
+    <title>2d0list</title>
+</head>
+<body>
+    <main>
+        <section class = "newItemEntry">
+
+           <form id ="itemEntryForm">
+            <label for ="newItem">Що ви хочете зробити?</label>
+               <input id="newItem" type="text" size="40" autocomplete="off" placeholder="Task name" tabindex="0"/>
+               <button id="addItem" class="button"
+                   title ="Add new item" aria-label = "Add new item to list" tabindex = "0">Add new task
+               </button>
+           </form>
+        </section>
+
+        <section class="listContainer">
+            <div class="listTitle">
+               <h1>
+                   Tasks
+               </h1> 
+                <button id = "clearItems" class = "button" title = "Clear the list" aria-label="Remove all items from the list" tabindex = "0">
+                    X
+                </button>
+            </div>
+            <div id = "listItems">
+               
+                  
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

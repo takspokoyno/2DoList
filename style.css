@@ -1,0 +1,159 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+    font-size: 16px;
+    font-family: "Montserrat", sans-serif;
+    color: #418ab7;
+    width: 100%;
+    min-height: 100%;
+}
+
+@media only screen and (min-width: 768px) {
+  html,
+  body {
+    font-size: 22px;
+  }
+}
+
+body {
+    padding: 20px;
+    background-color: #f5f7be;
+}
+
+section {
+  background-color: #DED5DD;
+  width: 90%;
+  max-width: 700px;
+  margin: auto;
+  border-radius: 10px;
+}
+
+.button {
+  width: 25%;
+  min-width: 48px;
+  min-height: 48px;
+  color: #000000;
+  border: none;
+  border-radius: 10px;
+  outline: none;
+  transition: .3s;
+}
+
+.button:hover {
+  cursor: pointer;
+}
+
+.button:hover,
+.button:focus {
+  filter: brightness(110%);
+  box-shadow: 2px 2px 2px rgb(41, 63, 74);
+}
+
+.newItemEntry {
+  position: sticky;
+  top: 0;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+}
+
+.newItemEntry form label {
+  position: absolute;
+  left: -10000px;
+}
+
+.newItemEntry form input[type="text"] {
+  width: 100%;
+  font-size: 1.25rem;
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem;
+  outline: none;
+}
+
+.newItemEntry form input[type="text"]:focus,
+.newItemEntry form input[type="text"]:hover {
+  box-shadow: 4px 2px 5px #1d3557;
+}
+
+.newItemEntry form button {
+  width: 100%;
+  font-size: 1.25rem;
+  padding: 0.25rem;
+  margin-top: .5rem;
+  background-color: #3984e6;
+  color: #efefef;
+}
+
+.newItemEntry form button:hover {
+  background-color: #2178e9;
+}
+
+@media only screen and (min-width: 768px) {
+  .newItemEntry form button {
+    font-size: 1.5rem;
+  }
+}
+
+.listContainer {
+  height: 70vh;
+  padding: 0.75rem;
+}
+
+.listContainer .listTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid black;
+}
+
+.listContainer .listTitle .button {
+  font-size: 1rem;
+  background-color: #f64755;
+  padding: 0 0.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.listContainer .listTitle .button:hover {
+  background-color: #f52c3d;
+} 
+
+@media only screen and (min-width: 768px) {
+  .listContainer .listTitle .button {
+    padding: 0 0.5rem;
+  }
+}
+
+.listContainer .listTitle hr {
+  width: 100%;
+}
+
+.listContainer .item {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+}
+
+.listContainer .item input[type="checkbox"] {
+  text-align: center;
+  width: 1rem;
+  min-width: 24px;
+  height: 1rem;
+  min-height: 24px;
+  cursor: pointer;
+  margin-right: 3.1rem;
+}
+
+.listContainer .item input[type="checkbox"]:focus + label {
+  text-decoration: underline;
+}
+
+.listContainer .item label {
+  font-size: 1.1rem;
+}
